@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "echo '[DEBUG] Architecture check:' && uname -m && arch && echo '[DEBUG] Node binary arch:' && file $(which node) && echo '[DEBUG] Try different node invocations:' && $(which node) --version 2>&1 || echo 'Direct invoke failed' && /usr/bin/env node --version 2>&1 || echo 'env node failed' && command -v node && vitest --typecheck.enabled 2>&1 || echo '[DEBUG] vitest also failed with:' $?"
+    "test": "/bin/sh -c \"echo 'Shell test' && pwd && ls | head -5 && vitest --typecheck.enabled\""
   },
   "devDependencies": {
     "@vitest/test-dep-conditions": "file:./deps/test-dep-conditions",
