@@ -293,14 +293,20 @@ function normalizeCliOptions(cliFilters: string[], argv: CliOptions): CliOptions
 }
 
 async function start(mode: VitestRunMode, cliFilters: string[], options: CliOptions): Promise<void> {
+  console.error('[DEBUG] start() called with:', { mode, cliFilters, options: Object.keys(options) })
   try {
     const { startVitest } = await import('./cli-api')
+    console.error('[DEBUG] startVitest imported, calling it...')
     const ctx = await startVitest(mode, cliFilters.map(normalize), normalizeCliOptions(cliFilters, options))
+    console.error('[DEBUG] startVitest returned, shouldKeepServer:', ctx.shouldKeepServer())
     if (!ctx.shouldKeepServer()) {
+      console.error('[DEBUG] Calling ctx.exit()...')
       await ctx.exit()
+      console.error('[DEBUG] ctx.exit() completed')
     }
   }
   catch (e) {
+    console.error('[DEBUG] ERROR in start():', e)
     const { errorBanner } = await import('../reporters/renderers/utils')
     console.error(`\n${errorBanner('Startup Error')}`)
     console.error(e)

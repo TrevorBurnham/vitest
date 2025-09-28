@@ -50,8 +50,13 @@ export async function startVitest(
   viteOverrides?: ViteUserConfig,
   vitestOptions?: VitestOptions,
 ): Promise<Vitest> {
+  console.error('[DEBUG] startVitest() called with mode:', mode)
+  console.error('[DEBUG] cliFilters:', cliFilters)
+  console.error('[DEBUG] option keys:', Object.keys(options))
   const root = resolve(options.root || process.cwd())
+  console.error('[DEBUG] root resolved to:', root)
 
+  console.error('[DEBUG] Calling prepareVitest...')
   const ctx = await prepareVitest(
     mode,
     options,
@@ -59,6 +64,7 @@ export async function startVitest(
     vitestOptions,
     cliFilters,
   )
+  console.error('[DEBUG] prepareVitest completed, ctx created')
 
   if (mode === 'test' && ctx._coverageOptions.enabled) {
     const provider = ctx._coverageOptions.provider || 'v8'

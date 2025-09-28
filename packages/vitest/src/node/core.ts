@@ -1178,6 +1178,8 @@ export class Vitest {
    * @param force If true, the process will exit immediately after closing the projects.
    */
   public async exit(force = false): Promise<void> {
+    console.error('[DEBUG] exit() called with force:', force)
+    console.error('[DEBUG] process.exitCode before exit:', process.exitCode)
     setTimeout(() => {
       this.report('onProcessTimeout').then(() => {
         console.warn(`close timed out after ${this.config.teardownTimeout}ms`)
@@ -1201,14 +1203,19 @@ export class Vitest {
           }
         }
 
+        console.error('[DEBUG] Timeout reached, calling process.exit()')
         process.exit()
       })
     }, this.config.teardownTimeout).unref()
 
+    console.error('[DEBUG] Calling this.close()...')
     await this.close()
+    console.error('[DEBUG] this.close() completed')
     if (force) {
+      console.error('[DEBUG] Force exit requested, calling process.exit()')
       process.exit()
     }
+    console.error('[DEBUG] exit() completed normally, process.exitCode:', process.exitCode)
   }
 
   /** @internal */
