@@ -105,8 +105,18 @@ export async function execute(method: 'run' | 'collect', ctx: ContextRPC, worker
 }
 
 export async function teardown(): Promise<void> {
-  const promises = [...globalListeners].map(l => l())
-  await Promise.all(promises)
+  const listeners = [...globalListeners]
+  globalListeners.clear()
+
+  const results = await Promise.allSettled(listeners.map(l => l()))
+
+  // Log errors but don't throw to ensure teardown completes
+  const errors = results.filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+  if (errors.length > 0) {
+    for (const error of errors) {
+      console.error('[vitest] Error during worker teardown:', error.reason)
+    }
+  }
 }
 
 function createImportMetaEnvProxy(): WorkerGlobalState['metaEnv'] {
